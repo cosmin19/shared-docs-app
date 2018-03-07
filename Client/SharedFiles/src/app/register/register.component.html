@@ -1,3 +1,56 @@
-<p>
-  register works!
-</p>
+<div class="container">
+    <div class="col-md-3"></div>
+
+    <!-- ********** START FORM ********** -->
+    <div class="col-md-6">
+        <h1>Register</h1>
+        <hr>
+        <form [formGroup]="registerForm" #f="ngForm" (ngSubmit)="registerForm.valid && submit()">
+
+            <!-- email -->
+            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && email.invalid }">
+                <label>Email</label>
+                <input type="text" required emailValid formControlName="email" class="form-control" />
+                <small *ngIf="f.submitted && email.invalid" class="form-text text-danger">Email is required</small>
+            </div>
+
+            <!-- password -->
+            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && password.invalid }">
+                <label>Password</label>
+                <input type="password" required formControlName="password" class="form-control" />
+                <small *ngIf="f.submitted && password.invalid" class="form-text text-danger">Password is required</small>
+            </div>
+
+            <!-- confirm password -->
+            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && confirmPassword.invalid }">
+                <label>Confirm password</label>
+                <input type="password" required formControlName="confirmPassword" class="form-control" />
+                <small *ngIf="f.submitted && confirmPassword.invalid" class="form-text text-danger">Passwords missmatch.</small>
+            </div>
+
+            <!-- first name -->
+            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && firstName.invalid }">
+                <label>First Name</label>
+                <input type="text" required formControlName="firstName" class="form-control" />
+                <small *ngIf="f.submitted && firstName.invalid" class="form-text text-danger">First Name is required</small>
+            </div>
+
+            <!-- last name -->
+            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && lastName.invalid }">
+                <label>Last Name</label>
+                <input type="text" required formControlName="lastName" class="form-control" />
+                <small *ngIf="f.submitted && lastName.invalid" class="form-text text-danger">Last Name is required</small>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Register</button>
+            <button class="btn btn-danger" type="button" (click)="clearForm()">Clear</button>
+        </form>
+        <hr>
+        <div class="text-center">
+            <a [routerLink]="['/login']">Log in</a> -
+        </div>
+    </div>
+    <!-- ********** END FORM ********** -->
+
+    <div class="col-md-3"></div>
+</div>
