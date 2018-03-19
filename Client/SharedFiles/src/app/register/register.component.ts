@@ -1,23 +1,29 @@
 import { ReactiveFormsModule, FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { AlertService, AuthenticationService } from '../_services/index';
 import { AppConfig } from '../app.config';
-import { Client } from '../_models/client/index';
-
+import { SelectItem } from 'primeng/primeng';
 import { CustomValidators } from '../_directives';
-import { EqualValidator } from './../_directives/validators/equal-validator.directive';
-import { AuthenticationService } from '../services/authentication.service';
-import { AlertService } from '../services/alert.service';
+import { RegisterDto } from '../_models/registerDto';
 
 @Component({
     templateUrl: 'register.component.html',
     styleUrls: ['register.component.css']
 })
 
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
 
     registerForm: FormGroup;
+
+    loading: boolean = false;
+    loadingUrl: string;
+
+
+    countryList: SelectItem[];
+    countyList: SelectItem[];
+    cityList: SelectItem[];
 
     constructor(fb: FormBuilder,
         private router: Router,
@@ -32,23 +38,29 @@ export class RegisterComponent implements OnInit {
             email: [null],
             password: [null],
             confirmPassword: [null],
-            firstName: [null],
-            lastName: [null],
+            username: [null],
+            firstname: [null],
+            lastname: [null],
         }, { validator: CustomValidators.CheckIfMatchingPasswords('password', 'confirmPassword') });
-
     }
 
     ngOnInit(): void {
+        this.loadingUrl = this._appConfig.loadingGifUrl;
+    }
+    
+    ngOnDestroy() {
+        this.loading = false;
     }
 
     submit(): void {
-        let newClient = new Client();
-            newClient.email = this.email.value;
-            newClient.password = this.password.value;
-            newClient.firstName = this.firstName.value;
-            newClient.lastName = this.lastName.value;
-
-            this._authService.register(newClient);
+        this.loading = true;
+        let newClient = new RegisterDto();
+        newClient.email = this.email.value;
+        newClient.password = this.password.value;
+        newClient.username = this.username.value;
+        newClient.firstname = this.firstname.value;
+        newClient.lastname = this.lastname.value;
+        this._authService.register(newClient);
     }
 
     clearForm(): void {
@@ -65,10 +77,13 @@ export class RegisterComponent implements OnInit {
     get confirmPassword() {
         return this.registerForm.get('confirmPassword') as FormControl;
     }
-    get firstName() {
-        return this.registerForm.get('firstName') as FormControl;
+    get username() {
+        return this.registerForm.get('username') as FormControl;
     }
-    get lastName() {
-        return this.registerForm.get('lastName') as FormControl;
+    get firstname() {
+        return this.registerForm.get('firstname') as FormControl;
+    }
+    get lastname() {
+        return this.registerForm.get('lastname') as FormControl;
     }
 }
