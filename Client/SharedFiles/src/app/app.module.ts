@@ -26,6 +26,7 @@ import { DataListModule } from 'primeng/components/datalist/datalist';
 import { GrowlModule } from 'primeng/components/growl/growl';
 import { RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/components/common/messageservice';
+import { AuthGuard } from './_guards';
 
 @NgModule({
     declarations: [
@@ -56,13 +57,14 @@ import { MessageService } from 'primeng/components/common/messageservice';
         ChipsModule,
         DataListModule,
         GrowlModule,
-        AppRoutingModule
+        AppRoutingModule,
     ],
     providers: [
         AuthenticationService,
         AlertService,
         AppConfig,
-        MessageService
+        MessageService,
+        AuthGuard,
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

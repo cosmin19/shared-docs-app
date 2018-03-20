@@ -2,7 +2,7 @@
     <div class="container-login100">
         <div class="wrap-login100">
             <div class="login100-pic js-tilt" data-tilt>
-                <img src="assets/content/images/logo.png" alt="tag4it logo" [routerLink]='[""]' class="hov-pointer">
+                <img src="assets/content/images/logo.png" alt="sharedFilesLogo" [routerLink]='[""]' class="hov-pointer">
             </div>
 
             <form class="login100-form" [formGroup]="loginForm" #f="ngForm" (ngSubmit)="loginForm.valid && submit()">
@@ -50,7 +50,7 @@
 
                 <div class="container-login100-form-btn">
                     <button class="login100-form-btn" type="submit">Login</button>
-                    <img *ngIf="loading" [src]="loadingUrl" alt="loading..." class="loadingGif">
+                    <img *ngIf="loading.loading" [src]="loadingUrl" alt="loading..." class="loadingGif">
                     <!-- <button class="login100-form-btn">
                         Login
                     </button> -->

@@ -6,6 +6,7 @@ import { AppContentComponent } from './app-content.component';
 import { DashboardComponent } from './user/dashboard';
 import { ClientsComponent } from './user/clients';
 import { UserComponent } from './user/user.component';
+import { AuthGuard } from './_guards';
 
 const routes: Routes =
     [
@@ -17,7 +18,8 @@ const routes: Routes =
                 { path: 'dashboard', component: DashboardComponent },
                 { path: 'clients', component: ClientsComponent },
                 { path: '', component: DashboardComponent },
-            ]
+            ],
+            canActivate:[AuthGuard]
         }
     ];
 

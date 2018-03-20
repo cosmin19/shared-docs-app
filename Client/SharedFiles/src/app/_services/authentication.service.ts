@@ -55,54 +55,33 @@ export class AuthenticationService extends BaseService {
         }
     }
 
-    login(email: string, password: string, returnUrl: string): void {
+    login(email: string, password: string, returnUrl: string, loading: any): void {
         let bodyData = JSON.stringify({ username: email, password: password });
-        this.http.post(this._baseUrl + 'login', bodyData, { observe: 'response', responseType: 'text', headers: this.jwt_content_type_json().headers })
+        this.http.post<any>(this._baseUrl + 'api/account/login', bodyData, this.jwt_content_type_json())
             .subscribe(
                 data => {
-                    let userToken = data.headers.get('Authorization');
-                    /* Dupa autentificare */
-                    if (userToken) {
-                        let auth_token = userToken.replace('Bearer ', '');
-                        if (auth_token) {
+                    let id = data.id;
+                    let expires_in = data.expires_in;
+                    let token = data.access_token.Result;
+                    if (id && expires_in && token) {
+                        let user = { id: id, token: token, expires_in: expires_in };
+                        localStorage.removeItem('currentUser');
+                        localStorage.setItem('currentUser', JSON.stringify(user));
 
-                            let user = { user: email, token: auth_token };
-                            localStorage.setItem('currentUser', JSON.stringify(user));
-                            /*  Daca token-ul e valid si autentificarea s-a facut cu succes, 
-                                fac al doilea request pentru a lua datele necesare din baza 
-                            */
-                            this.postLogin(email)
-                                .subscribe(
-                                    data => {
-                                        data.token = auth_token;
+                        this.loggedIn = true;
+                        this.subject.next(true);
 
-                                        localStorage.removeItem('currentUser');
-                                        localStorage.setItem('currentUser', JSON.stringify(data));
-
-                                        this.loggedIn = true;
-                                        this.subject.next(true);
-
-                                        this.router.navigate([returnUrl]);
-                                    },
-                                    error => {
-                                        localStorage.removeItem('currentUser');
-                                        var message = error.message;
-                                        this._alertService.error("Post login data", message);
-                                    }
-                                );
-                        }
+                        this.router.navigate([returnUrl]);
+                        loading.loading = false;
                     }
                 },
                 error => {
                     localStorage.removeItem('currentUser');
-                    var message = error.message;
+                    var message = error.error.message;
                     this._alertService.error("Login", message);
+                    loading.loading = false;
                 }
             );
-    }
-
-    postLogin(email: string): Observable<PostLoginDto> {
-        return this.http.get<PostLoginDto>(this._baseUrl + 'api/client/post-login?email=' + email, this.jwt_auth_content_type_json());
     }
 
     /* ------------------------------ Logout ------------------------------ */
@@ -115,9 +94,8 @@ export class AuthenticationService extends BaseService {
 
     /* ------------------------------ Register ------------------------------ */
     register(model: RegisterDto): void {
-        // register(model: Client): void {
         let bodyData = JSON.stringify(model);
-        this.http.post<MessageDto>(this._baseUrl + 'api/client/register', bodyData, this.jwt_content_type_json())
+        this.http.post<MessageDto>(this._baseUrl + 'api/account/register', bodyData, this.jwt_content_type_json())
             .subscribe(
                 data => {
                     var message = data.message;

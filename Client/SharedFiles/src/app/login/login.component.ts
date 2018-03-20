@@ -5,6 +5,7 @@ import { AlertService, AuthenticationService } from '../_services/index';
 import { AppConfig } from '../app.config';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import * as $ from 'jquery';
+import { Loading } from '../_models/loading';
 
 @Component({
     moduleId: module.id,
@@ -17,7 +18,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     loginForm: FormGroup;
     returnUrl: string;
     
-    loading: boolean = false;
+    protected loading = new Loading();
     loadingUrl: string;
 
     constructor(fb: FormBuilder,
@@ -34,6 +35,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.loading.loading = false;
         this.loadingUrl = this._appConfig.loadingGifUrl;
 
         if(this._authService.isLoggedIn()) {
@@ -47,12 +49,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.loading = false;
+        this.loading.loading = false;
     }
 
     submit() {
-        this.loading = true;
-        this._authService.login(this.email.value, this.password.value, this.returnUrl);
+        this.loading.loading = true;
+        this._authService.login(this.email.value, this.password.value, this.returnUrl, this.loading);
     }
 
     clearForm(): void {
