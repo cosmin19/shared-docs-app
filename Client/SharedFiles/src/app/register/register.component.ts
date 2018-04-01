@@ -21,11 +21,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     loading = new Loading();
     loadingUrl: string;
 
-
-    countryList: SelectItem[];
-    countyList: SelectItem[];
-    cityList: SelectItem[];
-
     constructor(fb: FormBuilder,
         private router: Router,
         private _authService: AuthenticationService,
