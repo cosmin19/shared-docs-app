@@ -1,0 +1,36 @@
+<div class="modal fade offset-header" id="editDocumentModal" tabindex="-1" role="dialog" aria-labelledby="editDocumentModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editDocumentModalTitle">Edit document</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="editDocumentForm" #f="ngForm" (ngSubmit)="editDocumentForm.valid && submit()">
+                    <div class="col-md-12">
+                        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && title.invalid }">
+                            <label>Title</label>
+                            <input type="text" required formControlName="title" class="form-control ti-input-control" />
+                            <small *ngIf="f.submitted && title.invalid" class="form-text text-danger">Title is required</small>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && subject.invalid }">
+                            <label>Subject</label>
+                            <p-editor formControlName="subject" required [style]="{'height':'320px'}"></p-editor>
+                            <small *ngIf="f.submitted && subject.invalid" class="form-text text-danger">Subject required</small>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary ti-button-control">Save</button>
+                        <button type="button" class="btn btn-danger ti-button-control" (click)="clearForm()">Clear</button>
+                        <button type="button" class="btn btn-secondary ti-button-control" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

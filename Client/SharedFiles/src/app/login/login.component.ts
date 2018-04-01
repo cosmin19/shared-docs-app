@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     loginForm: FormGroup;
     returnUrl: string;
     
-    protected loading = new Loading();
+    loading = new Loading();
     loadingUrl: string;
 
     constructor(fb: FormBuilder,
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.loadingUrl = this._appConfig.loadingGifUrl;
 
         if(this._authService.isLoggedIn()) {
-            this.router.navigate(['/customer/info']);
+            this.router.navigate(['']);
         }
         else {
             if (this._authService.isLoggedIn())

@@ -1,0 +1,14 @@
+<div class="col-md-12">
+    <div class="document-mini-info-div">
+        <div class="col-md-12 document-div">
+            <h4><strong class="document-h-label">Owner:</strong> {{document?.owner}}</h4>
+            <h6><strong class="document-h-label">Created on:</strong> {{document?.createdOnUtc}}</h6>
+            <br>
+            <h4><strong class="document-h-label">Title:</strong> {{document?.title}}</h4>
+            <h4><strong class="document-h-label">Subject:</strong></h4>
+            <div [innerHTML]="document?.subject">
+
+            </div>
+        </div>
+    </div>
+</div>

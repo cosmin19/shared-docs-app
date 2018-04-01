@@ -3,10 +3,10 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AppContentComponent } from './app-content.component';
-import { DashboardComponent } from './user/dashboard';
-import { ClientsComponent } from './user/clients';
 import { UserComponent } from './user/user.component';
 import { AuthGuard } from './_guards';
+import { DocumentComponent } from './document/document.component';
+import { DocumentInfoComponent } from './document/info/info.component';
 
 const routes: Routes =
     [
@@ -15,9 +15,8 @@ const routes: Routes =
         {
             path: '', component: UserComponent,
             children: [
-                { path: 'dashboard', component: DashboardComponent },
-                { path: 'clients', component: ClientsComponent },
-                { path: '', component: DashboardComponent },
+                { path: '', component: DocumentComponent },
+                { path: 'document/:id', component: DocumentInfoComponent },
             ],
             canActivate:[AuthGuard]
         }

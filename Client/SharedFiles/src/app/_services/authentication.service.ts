@@ -17,6 +17,7 @@ import { RegisterDto } from '../_models/registerDto';
 import { MessageDto } from '../_models/message';
 import { ChangePassDto } from '../_models/changepass';
 import { PostLoginDto } from '../_models/postLogin';
+import { Loading } from '../_models/loading';
 
 
 @Injectable()
@@ -26,7 +27,6 @@ export class AuthenticationService extends BaseService {
     private subject = new Subject<any>();
     loggedIn: boolean;
     private _baseUrl: string = '';
-    private _jwtHelper: JwtHelper;
 
     /* ------------------------------ Ctor ------------------------------ */
     constructor(
@@ -37,12 +37,11 @@ export class AuthenticationService extends BaseService {
     ) {
         super();
 
-        this._jwtHelper = new JwtHelper();
         this._baseUrl = _appConfig.baseUrl;
 
         /* Check if token is expired and sed isLoggedIn*/
         try {
-            let user = localStorage.getItem('currentUser');
+            let user = localStorage.getItem('electron-crt-user');
             if (user) {
                 let auth_token = JSON.parse(user)['token'];
                 if (auth_token) {
@@ -55,7 +54,7 @@ export class AuthenticationService extends BaseService {
         }
     }
 
-    login(email: string, password: string, returnUrl: string, loading: any): void {
+    login(email: string, password: string, returnUrl: string, loading: Loading): void {
         let bodyData = JSON.stringify({ username: email, password: password });
         this.http.post<any>(this._baseUrl + 'api/account/login', bodyData, this.jwt_content_type_json())
             .subscribe(
@@ -65,46 +64,56 @@ export class AuthenticationService extends BaseService {
                     let token = data.access_token.Result;
                     if (id && expires_in && token) {
                         let user = { id: id, token: token, expires_in: expires_in };
-                        localStorage.removeItem('currentUser');
-                        localStorage.setItem('currentUser', JSON.stringify(user));
+                        localStorage.removeItem('electron-crt-user');
+                        localStorage.setItem('electron-crt-user', JSON.stringify(user));
 
                         this.loggedIn = true;
                         this.subject.next(true);
 
                         this.router.navigate([returnUrl]);
-                        loading.loading = false;
+                        if (loading)
+                            loading.loading = false;
                     }
                 },
                 error => {
-                    localStorage.removeItem('currentUser');
+                    if (loading)
+                        loading.loading = false;
+                    localStorage.removeItem('electron-crt-user');
                     var message = error.error.message;
                     this._alertService.error("Login", message);
-                    loading.loading = false;
                 }
             );
     }
 
     /* ------------------------------ Logout ------------------------------ */
     logout() {
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem('electron-crt-user');
         this.loggedIn = false;
         this.subject.next(false);
+        this.router.navigate(['/login']);
         return true;
     }
 
     /* ------------------------------ Register ------------------------------ */
-    register(model: RegisterDto): void {
+    register(model: RegisterDto, loading: Loading): void {
         let bodyData = JSON.stringify(model);
         this.http.post<MessageDto>(this._baseUrl + 'api/account/register', bodyData, this.jwt_content_type_json())
             .subscribe(
                 data => {
+                    if (loading)
+                        loading.loading = false;
+
                     var message = data.message;
                     this._alertService.success("Register", message);
+                        
                     this.router.navigate(['/login']);
                 },
                 error => {
-                    var message = error.message;
+                    var message = error.error.message;
+                    console.log(error)
                     this._alertService.error("Register", message);
+                    if (loading)
+                        loading.loading = false;
                 }
             );
     }
@@ -134,24 +143,5 @@ export class AuthenticationService extends BaseService {
     /* ------------------------------ Get is authenticated ------------------------------ */
     getIsLoggedIn(): Observable<boolean> {
         return this.subject.asObservable();
-    }
-
-    /* ------------------------------ Get Decoded Token ------------------------------ */
-    getDecodedToken() {
-        let user = localStorage.getItem('currentUser');
-        if (user) {
-            let auth_token = JSON.parse(user)['token'];
-            if (auth_token) {
-                return this._jwtHelper.decodeToken(auth_token);
-            }
-        }
-        return null;
-    }
-
-    getEmailFromToken(): string {
-        let token = this.getDecodedToken();
-        if (token["sub"])
-            return token["sub"];
-        return null;
     }
 }

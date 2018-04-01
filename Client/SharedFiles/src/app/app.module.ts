@@ -10,15 +10,12 @@ import { RegisterComponent } from './register/register.component';
 import { AppContentComponent } from './app-content.component';
 import { AuthenticationService } from './_services/authentication.service';
 import { AlertService } from './_services/alert.service';
-import { GreaterThanZeroValidator, EqualValidator } from './_directives';
+import { GreaterThanZeroValidator, EqualValidator, EmailValidator } from './_directives';
 import { AppConfig } from './app.config';
-import { SidebarComponent } from './user/sidebar';
 import { HeaderComponent } from './user/header/header.component';
-import { DashboardComponent } from './user/dashboard';
-import { ClientsComponent } from './user/clients';
 import { UserContentComponent } from './user/user-content';
 import { UserComponent } from './user/user.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { CommonModule } from '@angular/common';
 import { ChipsModule } from 'primeng/components/chips/chips';
@@ -27,6 +24,17 @@ import { GrowlModule } from 'primeng/components/growl/growl';
 import { RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { AuthGuard } from './_guards';
+import { DocumentComponent } from './document/document.component';
+import { DocumentInfoComponent } from './document/info/info.component';
+import { AddDocumentComponent } from './document/modal/add-document/add-document.component';
+import { DocumentService } from './_services/document.service';
+import { EditorModule } from 'primeng/components/editor/editor';
+import { MiniInfoComponent } from './document/mini-info/mini-info.component';
+import { NgProgressModule, NgProgressInterceptor } from 'ngx-progressbar';
+import { ConfirmationService } from 'primeng/components/common/confirmationservice';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EditDocumentComponent } from './document/modal/edit-document/edit-document.component';
 
 @NgModule({
     declarations: [
@@ -35,18 +43,24 @@ import { AuthGuard } from './_guards';
         RegisterComponent,
         AppContentComponent,
         GreaterThanZeroValidator,
+        EmailValidator,
         EqualValidator,
-        SidebarComponent,
         HeaderComponent,
-        DashboardComponent,
-        ClientsComponent,
         UserContentComponent,
         UserComponent,
+        DocumentComponent,
+        DocumentInfoComponent,
+        AddDocumentComponent,
+        MiniInfoComponent,
+        EditDocumentComponent,
     ],
     imports: [
         BrowserModule,
         FormsModule,
+        BrowserAnimationsModule,
+        ConfirmDialogModule,
         ReactiveFormsModule,
+        NgProgressModule,
 
         HttpModule,
         HttpClientModule,
@@ -57,6 +71,7 @@ import { AuthGuard } from './_guards';
         ChipsModule,
         DataListModule,
         GrowlModule,
+        EditorModule,
         AppRoutingModule,
     ],
     providers: [
@@ -64,7 +79,11 @@ import { AuthGuard } from './_guards';
         AlertService,
         AppConfig,
         MessageService,
+        DocumentService,
+        ConfirmationService,
         AuthGuard,
+        { provide: HTTP_INTERCEPTORS, useClass: NgProgressInterceptor, multi: true },
+
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

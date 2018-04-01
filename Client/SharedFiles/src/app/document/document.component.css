@@ -1,0 +1,12 @@
+.document-div {
+    padding: 10px;
+    /* border: 1px solid black; */
+    box-shadow: 0 0 12px 1px rgba(31,152,152,.4);
+    border-radius: 5px;
+    margin-top: 10px; 
+    margin-bottom: 5px;
+}
+
+.document-h-label {
+    color:deepskyblue;
+}

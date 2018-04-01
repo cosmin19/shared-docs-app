@@ -7,6 +7,7 @@ import { AppConfig } from '../app.config';
 import { SelectItem } from 'primeng/primeng';
 import { CustomValidators } from '../_directives';
 import { RegisterDto } from '../_models/registerDto';
+import { Loading } from '../_models/loading';
 
 @Component({
     templateUrl: 'register.component.html',
@@ -17,7 +18,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     registerForm: FormGroup;
 
-    loading: boolean = false;
+    loading = new Loading();
     loadingUrl: string;
 
 
@@ -49,18 +50,18 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
     
     ngOnDestroy() {
-        this.loading = false;
+        this.loading.loading = false;
     }
 
     submit(): void {
-        this.loading = true;
+        this.loading.loading = true;
         let newClient = new RegisterDto();
         newClient.email = this.email.value;
         newClient.password = this.password.value;
         newClient.username = this.username.value;
         newClient.firstname = this.firstname.value;
         newClient.lastname = this.lastname.value;
-        this._authService.register(newClient);
+        this._authService.register(newClient, this.loading);
     }
 
     clearForm(): void {

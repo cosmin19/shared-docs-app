@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 @Injectable()
 export class AppConfig {
-    baseUrl:string = 'http://localhost:51248/';
+    baseUrl:string = 'http://localhost:60979/';
 
 
     loadingGifUrl: string = 'assets/content/loading.gif';
