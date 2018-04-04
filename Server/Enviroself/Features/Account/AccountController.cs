@@ -121,10 +121,6 @@ namespace Enviroself.Features.Account
             return BadRequest(new MessageDto() { Success = false, Message = "Token Invalid" });
         }
         #endregion
-
-        #region Utilities
-
-        #endregion
     }
 
     public class CaptchaDto {

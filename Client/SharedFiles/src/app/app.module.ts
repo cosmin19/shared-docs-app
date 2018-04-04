@@ -24,7 +24,6 @@ import { GrowlModule } from 'primeng/components/growl/growl';
 import { RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { AuthGuard } from './_guards';
-import { DocumentComponent } from './document/document.component';
 import { DocumentInfoComponent } from './document/info/info.component';
 import { AddDocumentComponent } from './document/modal/add-document/add-document.component';
 import { DocumentService } from './_services/document.service';
@@ -35,6 +34,7 @@ import { ConfirmationService } from 'primeng/components/common/confirmationservi
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditDocumentComponent } from './document/modal/edit-document/edit-document.component';
+import { DocumentComponent } from './document/document.component';
 
 @NgModule({
     declarations: [
