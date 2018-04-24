@@ -13,12 +13,12 @@ namespace Enviroself.Features.Document.Entities
     {
         [Key]
         public int Id { get; set; }
-        public int OwernId { get; set; }
+        public int OwnerId { get; set; }
         public int EditorId { get; set; }
         public int DocumentId { get; set; }
 
-        [ForeignKey(nameof(OwernId))]
-        public virtual User Owern { get; set; }
+        [ForeignKey(nameof(OwnerId))]
+        public virtual User Owner { get; set; }
 
         [ForeignKey(nameof(EditorId))]
         public virtual User Editor { get; set; }

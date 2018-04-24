@@ -29,15 +29,12 @@ namespace Enviroself
 {
     public class Startup
     {
-        private const string SecretKey = "the secret that needs to be at least 16 characeters long for HmacSha256"; // todo: get this from somewhere secure
+        private const string SecretKey = "ProiectIDP_SharedFiles"; // todo: get this from somewhere secure
         private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
 
-        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            loggerFactory.AddConsole(Configuration.GetSection("Logging")); //log levels set in your configuration
-            loggerFactory.AddDebug(); //does all log levels
         }
 
         public IConfiguration Configuration { get; }
@@ -46,14 +43,8 @@ namespace Enviroself
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             #region Database
-            //services.AddDbContext<DbApplicationContext>(options =>
-            //   options.UseSqlServer(Configuration.GetConnectionString("BasicWebApi"),
-            //   b => b.MigrationsAssembly("Enviroself")));
             services.AddDbContext<DbApplicationContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SharedFiles")));
-
-            // Register Context
-            //services.AddDbContext<DbApplicationContext>(opt => opt.UseInMemoryDatabase("TodoList"));
             #endregion
 
             #region MvcAndFeatureFolders
@@ -77,14 +68,6 @@ namespace Enviroself
                 options.AreaViewLocationFormats.Insert(0, "/Areas/{2}/Features/{3}/{1}/{0}.cshtml");
 
                 options.ViewLocationExpanders.Add(new FeatureFoldersRazorViewEngine());
-            });
-            #endregion
-
-            #region Swagger
-            // Register the Swagger generator, defining one or more Swagger documents
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "ASP.NET Core Basic Web API", Version = "v1" });
             });
             #endregion
 
@@ -143,7 +126,6 @@ namespace Enviroself
                 options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
                     .Build();
-                //options.AddPolicy("TestPolicy", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
             });
             #endregion
 
@@ -186,22 +168,10 @@ namespace Enviroself
                         var error = context.Features.Get<IExceptionHandlerFeature>();
                         if (error != null)
                         {
-                            //context.Response.AddApplicationError(error.Error.Message); ????
                             await context.Response.WriteAsync(error.Error.Message).ConfigureAwait(false);
                         }
                     });
             });
-
-            #region Swagger
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
-            #endregion
 
             app.UseStaticFiles();
             app.UseCors("Cors");
@@ -212,15 +182,9 @@ namespace Enviroself
                 routes.MapRoute(
                     name: "Admin",
                     template: "{area:exists}/{controller=Home}/{action=Get}");
-                //routes.MapRoute(
-                //    name: "default",
-                //    template: "{controller=Home}/{action=Get}/{id?}");
-            });
-
-            app.Run(ctx =>
-            {
-                ctx.Response.Redirect("/index.html");
-                return Task.FromResult(0);
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Get}/{id?}");
             });
 
             app.Run(async (context) =>

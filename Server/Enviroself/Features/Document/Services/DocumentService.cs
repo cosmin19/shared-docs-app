@@ -69,6 +69,22 @@ namespace Enviroself.Features.Document.Services
                 return new MessageDto() { Success = false, Message = "Error." };
 
             await _context.Documents.AddAsync(document);
+
+            /* Userul ce a creat documentul este by default si Viewer si Editor */
+            await _context.UserDocumentViews.AddAsync(new UserDocumentView()
+            {
+                DocumentId = document.Id,
+                OwnerId = document.OwnerId,
+                ViewerId = document.OwnerId,
+            });
+
+            await _context.UserDocumentEdits.AddAsync(new UserDocumentEdit()
+            {
+                DocumentId = document.Id,
+                OwnerId = document.OwnerId,
+                EditorId = document.OwnerId,
+            });
+
             await _context.SaveChangesAsync();
             return new MessageDto() { Success = true, Message = "Document Inserted." };
         }

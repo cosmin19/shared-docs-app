@@ -15,10 +15,9 @@ namespace Enviroself.Features.Document
     [Authorize]
     public class DocumentController : Controller
     {
+        #region Fields
         private readonly IDocumentService _documentService;
         private readonly IIdentityService _identityService;
-        #region Fields
-
         #endregion
 
         #region Ctor
