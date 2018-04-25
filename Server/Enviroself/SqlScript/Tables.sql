@@ -36,6 +36,7 @@ CREATE TABLE [Invitation]
 
 CREATE TABLE [User_Document_Edit]
 (
+	[Id] int not null PRIMARY KEY IDENTITY(1,1),
 	[OwnerId] int not null FOREIGN KEY REFERENCES dbo.[User](Id),
 	[DocumentId] int not null FOREIGN KEY REFERENCES dbo.[Document](Id),
 	[EditorId] int not null FOREIGN KEY REFERENCES dbo.[User](Id),
@@ -43,6 +44,7 @@ CREATE TABLE [User_Document_Edit]
 
 CREATE TABLE [User_Document_View]
 (
+	[Id] int not null PRIMARY KEY IDENTITY(1,1),
 	[OwnerId] int not null FOREIGN KEY REFERENCES dbo.[User](Id),
 	[DocumentId] int not null FOREIGN KEY REFERENCES dbo.[Document](Id),
 	[ViewerId] int not null FOREIGN KEY REFERENCES dbo.[User](Id),

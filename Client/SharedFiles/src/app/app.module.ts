@@ -28,7 +28,6 @@ import { DocumentInfoComponent } from './document/info/info.component';
 import { AddDocumentComponent } from './document/modal/add-document/add-document.component';
 import { DocumentService } from './_services/document.service';
 import { EditorModule } from 'primeng/components/editor/editor';
-import { MiniInfoComponent } from './document/mini-info/mini-info.component';
 import { NgProgressModule, NgProgressInterceptor } from 'ngx-progressbar';
 import { ConfirmationService } from 'primeng/components/common/confirmationservice';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -54,7 +53,6 @@ import { NotificationsComponent } from './user/notifications/notifications.compo
         DocumentComponent,
         DocumentInfoComponent,
         AddDocumentComponent,
-        MiniInfoComponent,
         EditDocumentComponent,
         MiniInfoEditComponent,
         MiniInfoViewComponent,

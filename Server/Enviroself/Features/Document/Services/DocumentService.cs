@@ -27,7 +27,7 @@ namespace Enviroself.Features.Document.Services
                 OwnerId = ownerId,
                 EditorId = editorId,
             });
-
+            await _context.SaveChangesAsync();
             return new MessageDto() { Success = true, Message = "Success" };
         }
 
@@ -40,7 +40,7 @@ namespace Enviroself.Features.Document.Services
                 OwnerId = ownerId,
                 ViewerId = viewerId,
             });
-
+            await _context.SaveChangesAsync();
             return new MessageDto() { Success = true, Message = "Success" };
         }
 
@@ -102,7 +102,7 @@ namespace Enviroself.Features.Document.Services
 
         public virtual async Task<IList<Entities.Document>> GetAllOtherEditDocumentsForClient(int clientId)
         {
-            var documentIds = await _context.UserDocumentEdits.Where(c => c.EditorId == clientId).Select(c => c.DocumentId).ToListAsync();
+            var documentIds = await _context.UserDocumentEdits.Where(c => c.EditorId == clientId && c.OwnerId != clientId).Select(c => c.DocumentId).ToListAsync();
             List<Entities.Document> result = new List<Entities.Document>();
 
             foreach(var id in documentIds)
@@ -117,7 +117,7 @@ namespace Enviroself.Features.Document.Services
 
         public virtual async Task<IList<Entities.Document>> GetAllOtherViewDocumentsForClient(int clientId)
         {
-            var documentIds = await _context.UserDocumentViews.Where(c => c.ViewerId == clientId).Select(c => c.DocumentId).ToListAsync();
+            var documentIds = await _context.UserDocumentViews.Where(c => c.ViewerId == clientId && c.OwnerId != clientId ).Select(c => c.DocumentId).ToListAsync();
             List<Entities.Document> result = new List<Entities.Document>();
 
             foreach (var id in documentIds)
