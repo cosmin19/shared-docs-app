@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AlertService } from '../../_services';
 import { DocumentInfoDto } from '../../_models/document/document-info';
 import { DocumentService } from '../../_services/document.service';
+import { ClientDto } from '../../_models/client';
 
 @Component({
     selector: 'app-info',
@@ -13,8 +14,10 @@ export class DocumentInfoComponent implements OnInit {
 
     documentId: number;
     document: DocumentInfoDto;
+    viewers: ClientDto[];
+    editers: ClientDto[];
 
-    constructor(
+    constructor (
         private router: Router,
         private route: ActivatedRoute,
         private _documentService: DocumentService, 
@@ -23,7 +26,6 @@ export class DocumentInfoComponent implements OnInit {
         this.documentId = Number(this.route.snapshot.params['id']);
         if (isNaN(this.documentId))
             this.router.navigate(['']);
-
     }
 
     ngOnInit() {
@@ -31,6 +33,10 @@ export class DocumentInfoComponent implements OnInit {
         .subscribe(
             data => {
                 this.document = data;
+                if(data.isOwnerDocument) {
+                    this.prepareViewers();
+                    this.prepareEditers();
+                }
             },
             error => {
                 let message = error.error.message;
@@ -38,5 +44,32 @@ export class DocumentInfoComponent implements OnInit {
             }
         );
     }
+
+    prepareViewers() {
+        this._documentService.getViewersForDocument(this.document.id)
+        .subscribe(
+            data => {
+                this.viewers = data;
+            },
+            error => {
+                this._alertService.error("Viewers", "Error")
+            }
+
+        )
+    }
+
+    prepareEditers() {
+        this._documentService.getEditersForDocument(this.document.id)
+        .subscribe(
+            data => {
+                this.editers = data;
+            },
+            error => {
+                this._alertService.error("Editers", "Error")
+            }
+
+        )
+    }
+
 
 }

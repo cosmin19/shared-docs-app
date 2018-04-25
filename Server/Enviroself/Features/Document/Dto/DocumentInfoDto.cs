@@ -15,6 +15,7 @@ namespace Enviroself.Features.Document.Dto
         public string Subject { get; set; }
         public string CreatedOnUtc { get; set; }
         public string UpdatedOnUtc { get; set; }
+        public bool IsOwnerDocument { get; set; }
 
     }
 }

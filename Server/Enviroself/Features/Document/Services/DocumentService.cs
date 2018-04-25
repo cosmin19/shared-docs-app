@@ -1,4 +1,5 @@
 ﻿using Enviroself.Context;
+using Enviroself.Features.Account.Entities;
 using Enviroself.Features.Document.Entities;
 using Enviroself.Models;
 using Microsoft.EntityFrameworkCore;
@@ -136,9 +137,28 @@ namespace Enviroself.Features.Document.Services
             return result;
         }
 
+        public virtual async Task<List<User>> GetEditersForDocument(int ownerId, int documentId)
+        {
+            return await _context.UserDocumentEdits.Where(c => c.EditorId != ownerId && c.DocumentId == documentId).Include(c => c.Editor).Select(c => c.Editor).ToListAsync();
+        }
+
         public virtual async Task<Invitation> GetInvitationById(int invitationId)
         {
-            return await _context.Invitations.Where(c => c.Id == invitationId).FirstOrDefaultAsync();
+            return await _context.Invitations.Where(c => c.Id == invitationId)
+                        .Include(c => c.Document)
+                        .Include(c => c.ToUser)
+                        .Include(c => c.FromUser)
+                        .FirstOrDefaultAsync();
+        }
+
+        public virtual async Task<IList<Invitation>> GetPendingInvitations(int clientId)
+        {
+            return  await _context.Invitations.Where(c => c.ToUserId == clientId && c.Status == (int)InvitationStatus.Pending).ToListAsync();
+        }
+
+        public virtual async Task<List<User>> GetViewersForDocument(int ownerId, int documentId)
+        {
+            return await _context.UserDocumentViews.Where(c => c.ViewerId != ownerId && c.DocumentId == documentId).Include(c => c.Viewer).Select(c => c.Viewer).ToListAsync();
         }
 
         public virtual async Task<MessageDto> InsertDocument(Entities.Document document)

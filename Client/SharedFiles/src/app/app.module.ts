@@ -35,6 +35,9 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditDocumentComponent } from './document/modal/edit-document/edit-document.component';
 import { DocumentComponent } from './document/document.component';
+import { MiniInfoEditComponent } from './document/mini-info-edit/mini-info-edit.component';
+import { MiniInfoViewComponent } from './document/mini-info-view/mini-info-view.component';
+import { NotificationsComponent } from './user/notifications/notifications.component';
 
 @NgModule({
     declarations: [
@@ -53,6 +56,9 @@ import { DocumentComponent } from './document/document.component';
         AddDocumentComponent,
         MiniInfoComponent,
         EditDocumentComponent,
+        MiniInfoEditComponent,
+        MiniInfoViewComponent,
+        NotificationsComponent,
     ],
     imports: [
         BrowserModule,

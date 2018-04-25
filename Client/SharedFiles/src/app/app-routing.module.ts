@@ -7,6 +7,9 @@ import { UserComponent } from './user/user.component';
 import { AuthGuard } from './_guards';
 import { DocumentComponent } from './document/document.component';
 import { DocumentInfoComponent } from './document/info/info.component';
+import { MiniInfoEditComponent } from './document/mini-info-edit/mini-info-edit.component';
+import { MiniInfoViewComponent } from './document/mini-info-view/mini-info-view.component';
+import { NotificationsComponent } from './user/notifications/notifications.component';
 
 const routes: Routes =
     [
@@ -17,6 +20,9 @@ const routes: Routes =
             children: [
                 { path: '', component: DocumentComponent },
                 { path: 'document/:id', component: DocumentInfoComponent },
+                { path: 'document-edit', component: MiniInfoEditComponent },
+                { path: 'document-view', component: MiniInfoViewComponent },
+                { path: 'notifications', component: NotificationsComponent },
             ],
             canActivate:[AuthGuard]
         }

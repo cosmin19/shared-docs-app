@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="row client-info-column">
+        <div class="panel-left">
+            <h2>Documents you can view</h2>
+        </div>
+        <div class="panel-right">
+            <button type="button" class="btn btn-info ti-button-control" (click)="refresh()">
+                Refresh
+            </button>
+        </div>
+
+    </div>
+
+    <add-document></add-document>
+    <div class="row" *ngFor="let document of documents">
+        <div class="document-mini-info-div">
+            <div class="col-md-12 document-div">
+                <h4>
+                    <strong class="document-h-label">Owner:</strong> {{document.owner}}</h4>
+                <h6>
+                    <strong class="document-h-label">Created on:</strong> {{document.createdOnUtc}}</h6>
+                <br>
+                <h4>
+                    <strong class="document-h-label">Title:</strong> {{document.title}}</h4>
+                <p>
+                    <a [routerLink]="['document/' + document.id]" style="cursor: pointer;">View</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

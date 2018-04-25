@@ -5,10 +5,16 @@
         </div>
         <ul class="nav navbar-nav">
             <li>
-                <a [routerLink]="['']">Documents</a>
+                <a [routerLink]="['']">My Documents</a>
             </li>
             <li>
-                <a href="#">Settings</a>
+                <a [routerLink]="['document-edit']">Other Documents(Edit)</a>
+            </li>
+            <li>
+                <a [routerLink]="['document-view']">Other Documents(View)</a>
+            </li>
+            <li>
+                <a [routerLink]="['notifications']">Notifications</a>
             </li>
             <li>
                 <a style="cursor: pointer;" id="logout-a" (click)="logOut()">Log Out</a>

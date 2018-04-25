@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Enviroself.Features.Account.Entities;
 using Enviroself.Features.Document.Entities;
 using Enviroself.Models;
 
@@ -25,5 +26,8 @@ namespace Enviroself.Features.Document.Services
         Task<MessageDto> RemoveClientFromEditDocument(int clientId, int documentId);
         Task<IList<Entities.Document>> GetAllOtherViewDocumentsForClient(int clientId);
         Task<IList<Entities.Document>> GetAllOtherEditDocumentsForClient(int clientId);
+        Task<IList<Invitation>> GetPendingInvitations(int clientId);
+        Task<List<User>> GetViewersForDocument(int ownerId, int documentId);
+        Task<List<User>> GetEditersForDocument(int ownerId, int documentId);
     }
 }

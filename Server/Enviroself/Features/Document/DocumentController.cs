@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Enviroself.Features.Account.Entities;
 using Enviroself.Features.Document.Dto;
 using Enviroself.Features.Document.Entities;
 using Enviroself.Features.Document.Services;
@@ -76,10 +77,72 @@ namespace Enviroself.Features.Document
                 Title = entity.Title,
                 CreatedOnUtc = entity.CreatedOnUtc.ToShortDateString(),
                 UpdatedOnUtc = entity.UpdatedOnUtc != null ? entity.UpdatedOnUtc.Value.ToShortDateString() : "",
-                Owner = entity.Owner.FirstName + " " + entity.Owner.LastName
+                Owner = entity.Owner.FirstName + " " + entity.Owner.LastName,
+                IsOwnerDocument = entity.OwnerId == currentUser.Id ? true : false
             };
             return new OkObjectResult(model);
         }
+
+        [HttpGet("getviewersfordocument")]
+        public async Task<IActionResult> GetViewersForDocument([FromQuery(Name = "documentId")] int documentId)
+        {
+            var currentUser = await _identityService.GetCurrentPersonIdentityAsync();
+
+            if (currentUser == null)
+                return BadRequest(new MessageDto() { Success = true, Message = "Invalid user" });
+
+            var document = await _documentService.GetDocumentById(documentId);
+            if(document.OwnerId != currentUser.Id)
+                return BadRequest(new MessageDto() { Success = true, Message = "Invalid request" });
+
+            List<User> users = await _documentService.GetViewersForDocument(currentUser.Id, documentId);
+
+            var result = new List<ClientDto>();
+            foreach(var user in users)
+            {
+                result.Add(new ClientDto()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Firstname = user.FirstName,
+                    Lastname = user.LastName,
+                    Username = user.UserName
+                });
+            }
+
+            return new OkObjectResult(result);
+        }
+
+        [HttpGet("geteditersfordocument")]
+        public async Task<IActionResult> GetEditersForDocument([FromQuery(Name = "documentId")] int documentId)
+        {
+            var currentUser = await _identityService.GetCurrentPersonIdentityAsync();
+
+            if (currentUser == null)
+                return BadRequest(new MessageDto() { Success = true, Message = "Invalid user" });
+
+            var document = await _documentService.GetDocumentById(documentId);
+            if (document.OwnerId != currentUser.Id)
+                return BadRequest(new MessageDto() { Success = true, Message = "Invalid request" });
+
+            List<User> users = await _documentService.GetEditersForDocument(currentUser.Id, documentId);
+
+            var result = new List<ClientDto>();
+            foreach (var user in users)
+            {
+                result.Add(new ClientDto()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Firstname = user.FirstName,
+                    Lastname = user.LastName,
+                    Username = user.UserName
+                });
+            }
+
+            return new OkObjectResult(result);
+        }
+
 
         [HttpPut]
         public async Task<IActionResult> AddDocument([FromBody]DocumentNewDto model)
@@ -183,6 +246,33 @@ namespace Enviroself.Features.Document
                     Subject = item.Subject,
                     Title = item.Title,
                     CreatedOnUtc = item.CreatedOnUtc.ToShortDateString()
+                });
+            }
+
+            return new OkObjectResult(model);
+        }
+
+        [HttpGet("notifications")]
+        public async Task<IActionResult> Notifications()
+        {
+            var currentUser = await _identityService.GetCurrentPersonIdentityAsync();
+
+            if (currentUser == null)
+                return BadRequest(new MessageDto() { Success = true, Message = "Invalid user" });
+
+            IList<Invitation> result = await _documentService.GetPendingInvitations(currentUser.Id);
+            var model = new List<NotificationDto>();
+            foreach (var item in result)
+            {
+                model.Add(new NotificationDto()
+                {
+                    InvitationId = item.Id,
+                    FromUserId = item.FromUserId,
+                    ToUserId = item.ToUserId,
+                    Message = item.Message,
+                    ActionType = item.ActionType,
+                    DocumentId = item.DocumentId,
+                    Status = item.Status
                 });
             }
 
