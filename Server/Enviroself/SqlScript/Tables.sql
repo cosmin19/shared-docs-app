@@ -28,7 +28,10 @@ CREATE TABLE [Invitation]
 	[Id] int not null PRIMARY KEY IDENTITY(1,1),
 	[FromUserId] int not null FOREIGN KEY REFERENCES dbo.[User](Id),
 	[ToUserId] int not null FOREIGN KEY REFERENCES dbo.[User](Id),
-	[Status] int not null /* (0 - Pending, 1 - Accepted, 2 - Refused) */
+	[Status] int not null,
+	[ActionType] int not null,
+	[Message] nvarchar(200),
+	[DocumentId] int not null FOREIGN KEY REFERENCES dbo.[Document](Id),
 )
 
 CREATE TABLE [User_Document_Edit]

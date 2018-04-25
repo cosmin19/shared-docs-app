@@ -68,7 +68,6 @@ namespace Enviroself.Features.Account
             return new OkObjectResult(json);
         }
 
-
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
@@ -102,36 +101,6 @@ namespace Enviroself.Features.Account
             return BadRequest(errors);
         }
 
-        [HttpPost("validateRecaptcha")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ValidateRecaptcha([FromBody] CaptchaDto model)
-        {
-            string secretKey = "6LcIXk0UAAAAAPuQk42Nx6cqzGHz-QHe5kj1u_tB";
-            var client = new HttpClient();
-            string result = await client.GetStringAsync(
-                string.Format("https://www.google.com/recaptcha/api/siteverify?secret={0}&response={1}",
-                    secretKey,
-                    model.Response)
-                    );
-
-            var captchaResponse = JsonConvert.DeserializeObject<RecapthcaResonseDto>(result);
-
-            if (captchaResponse.Success)
-                return new OkObjectResult(new MessageDto() { Success = true, Message = "Token Valid" });
-            return BadRequest(new MessageDto() { Success = false, Message = "Token Invalid" });
-        }
         #endregion
     }
-
-    public class CaptchaDto {
-        public string Response { get; set; }
-    }
-
-    public class RecapthcaResonseDto
-    {
-        public bool Success { get; set; }
-        public DateTime Challenge_ts { get; set; }
-        public string Hostname { get; set; }
-    }
-
 }
