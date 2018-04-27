@@ -4,6 +4,7 @@ import { AlertService } from '../../_services';
 import { DocumentInfoDto } from '../../_models/document/document-info';
 import { DocumentService } from '../../_services/document.service';
 import { ClientDto } from '../../_models/client';
+import { OtherClientDocumentIdsDto, InvitationActionType } from '../../_models/other-client-document';
 
 @Component({
     selector: 'app-info',
@@ -29,6 +30,10 @@ export class DocumentInfoComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.refresh();
+    }
+
+    refresh() {
         this._documentService.getDocumentById(this.documentId)
         .subscribe(
             data => {
@@ -67,9 +72,50 @@ export class DocumentInfoComponent implements OnInit {
             error => {
                 this._alertService.error("Editers", "Error")
             }
-
         )
     }
 
+    kickUserFromView(clientId: number) {
+        let model = new OtherClientDocumentIdsDto();
+        model.ActionType = InvitationActionType.View;
+        model.DocumentId = this.documentId;
+        model.ClientId = clientId;
+        
+        this._documentService.kickViewDocument(model)
+        .subscribe(
+            data => {
+                if(data.success) {
+                    this._alertService.success("Viewer", data.message);
+                    this.refresh();
+                }
+                else
+                    this._alertService.error("Viewer", "Error")
+            },
+            error => {
+                this._alertService.error("Viewer", "Error")
+            }
+        )
+    }
 
+    kickUserFromEdit(clientId: number) {
+        let model = new OtherClientDocumentIdsDto();
+        model.ActionType = InvitationActionType.Edit;
+        model.DocumentId = this.documentId;
+        model.ClientId = clientId;
+        
+        this._documentService.kickEditDocument(model)
+        .subscribe(
+            data => {
+                if(data.success) {
+                    this._alertService.success("Editer", data.message);
+                    this.refresh();
+                }
+                else
+                    this._alertService.error("Editer", "Error")
+            },
+            error => {
+                this._alertService.error("Editer", "Error")
+            }
+        )
+    }
 }

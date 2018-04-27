@@ -3,34 +3,73 @@
         <div class="col-md-9">
             <div class="document-mini-info-div">
                 <div class="col-md-12 document-div">
-                    <h4><strong class="document-h-label">Owner:</strong> {{document?.owner}}</h4>
-                    <h6><strong class="document-h-label">Created on:</strong> {{document?.createdOnUtc}}</h6>
+                    <h4>
+                        <strong class="document-h-label">Owner:</strong> {{document?.owner}}</h4>
+                    <h6>
+                        <strong class="document-h-label">Created on:</strong> {{document?.createdOnUtc}}</h6>
                     <br>
-                    <h4><strong class="document-h-label">Title:</strong> {{document?.title}}</h4>
-                    <h4><strong class="document-h-label">Subject:</strong></h4>
+                    <h4>
+                        <strong class="document-h-label">Title:</strong> {{document?.title}}</h4>
+                    <h4>
+                        <strong class="document-h-label">Subject:</strong>
+                    </h4>
                     <div [innerHTML]="document?.subject">
-        
+
                     </div>
                 </div>
             </div>
         </div>
 
+        <app-all-users [documentId]="documentId"></app-all-users>
 
         <div class="col-md-3">
-            <div *ngIf="document.isOwnerDocument">
+            <div *ngIf="document?.isOwnerDocument">
+                <div>
+                    <button type="button" class="btn btn-primary ti-button-control" data-toggle="modal" data-target="#inviteUserModal">Invite</button>
+                    <button type="button" class="btn btn-primary ti-button-control" (click)="refresh()">Refresh</button>
+                </div>
                 <div>
                     <h4>Viewers</h4>
                     <br>
-                    <h6 *ngFor="let viewer of viewers">{{viewer.username}}</h6>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let viewer of viewers">
+                                <td>{{viewer?.username}}</td>
+                                <td>
+                                    <a (click)="kickUserFromView(viewer.id)"> Kick </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <br>
                 <div>
                     <h4>Editors</h4>
                     <br>
-                    <h6 *ngFor="let editer of editers">{{editer.username}}</h6>
+                    <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let editer of editers">
+                                    <td>{{editer?.username}}</td>
+                                    <td>
+                                        <a (click)="kickUserFromEdit(editer.id)"> Kick </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
-

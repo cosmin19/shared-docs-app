@@ -88,4 +88,10 @@ export class DocumentComponent implements OnInit {
         });
     }
 
+    documentEmitAction(event: boolean) {
+        console.log("aj aici");
+        if(event)
+            this.refresh();
+    }
+
 }

@@ -37,6 +37,7 @@ import { DocumentComponent } from './document/document.component';
 import { MiniInfoEditComponent } from './document/mini-info-edit/mini-info-edit.component';
 import { MiniInfoViewComponent } from './document/mini-info-view/mini-info-view.component';
 import { NotificationsComponent } from './user/notifications/notifications.component';
+import { AllUsersComponent } from './user/all-users/all-users.component';
 
 @NgModule({
     declarations: [
@@ -57,6 +58,7 @@ import { NotificationsComponent } from './user/notifications/notifications.compo
         MiniInfoEditComponent,
         MiniInfoViewComponent,
         NotificationsComponent,
+        AllUsersComponent,
     ],
     imports: [
         BrowserModule,

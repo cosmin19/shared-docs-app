@@ -1,9 +1,9 @@
 export class NotificationDto {
-    InvitationId: number;
-    FromUserId: number;
-    ToUserId: number;
-    Status: number;
-    DocumentId: number;
-    ActionType: number;
-    Message: string;
+    invitationId: number;
+    fromUserId: number;
+    toUserId: number;
+    status: number;
+    documentId: number;
+    actionType: number;
+    message: string;
 }

@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using Enviroself.Context;
-using Enviroself.Features.Account;
 using Enviroself.Infrastructure.DependencyManagement;
 using Enviroself.Infrastructure.Jwt.Entities;
 using Enviroself.Infrastructure.FeatureFolders;
@@ -20,10 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace Enviroself
 {
@@ -44,7 +36,7 @@ namespace Enviroself
         {
             #region Database
             services.AddDbContext<DbApplicationContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("SharedFiles")));
+                options.UseSqlServer(Configuration.GetConnectionString("Azure")));
             #endregion
 
             #region MvcAndFeatureFolders
@@ -149,7 +141,7 @@ namespace Enviroself
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, DbApplicationContext dbContext)
         {
             if (env.IsDevelopment())
             {
@@ -176,6 +168,9 @@ namespace Enviroself
             app.UseStaticFiles();
             app.UseCors("Cors");
             app.UseAuthentication();
+
+            dbContext.Database.EnsureCreated();
+
 
             app.UseMvc(routes =>
             {

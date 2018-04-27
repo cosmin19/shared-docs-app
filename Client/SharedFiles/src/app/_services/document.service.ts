@@ -9,6 +9,7 @@ import { DocumentInfoDto } from "../_models/document/document-info";
 import { NotificationDto } from "../_models/notification";
 import { OtherClientDocumentIdsDto } from "../_models/other-client-document";
 import { ClientDto } from "../_models/client";
+import { UserRecordDto } from "../_models/user-record";
 
 @Injectable()
 export class DocumentService extends BaseService {
@@ -125,6 +126,9 @@ export class DocumentService extends BaseService {
         return this.http.get<ClientDto[]>(this.baseUrl + 'api/document/geteditersfordocument', { headers: headers, params: params });
     }
 
+    getAllUsers() : Observable<UserRecordDto[]> {
+        const headers = this.jwt_auth_content_type_json().headers;
 
-
+        return this.http.get<UserRecordDto[]>(this.baseUrl + 'api/document/getallusers', { headers: headers });
+    }
 }

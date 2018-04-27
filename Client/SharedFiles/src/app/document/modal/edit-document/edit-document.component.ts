@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, SimpleChanges, OnChanges, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { DocumentNewDto } from '../../../_models/document/document-new';
 import { Router } from '@angular/router';
@@ -16,6 +16,8 @@ export class EditDocumentComponent implements OnInit, OnChanges {
     @Input() document: DocumentMiniInfo;
     editDocumentForm: FormGroup;
     documentEdit: DocumentEditDto = new DocumentEditDto();
+    @Output() documentEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+    
 
 
     constructor(fb: FormBuilder,
@@ -56,6 +58,7 @@ export class EditDocumentComponent implements OnInit, OnChanges {
                 data => {
                     if (data.success) {
                         this._alertService.success("Document", data.message);
+                        this.documentEmitter.emit(true);
                     }
                     else {
                         this._alertService.error("Document", data.message);

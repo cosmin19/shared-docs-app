@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Enviroself.Features.Account.Entities;
 using Enviroself.Features.Document.Dto;
@@ -322,6 +323,8 @@ namespace Enviroself.Features.Document
             if (model.ClientId == currentUser.Id)
                 return BadRequest(new MessageDto() { Success = true, Message = "You can't invite yourself" });
 
+            string message = "You have been invited to " + (model.ActionType == InvitationActionType.View ? "VIEW" : "EDIT") + " document: " + document.Title;
+
             var invitation = new Invitation()
             {
                 DocumentId = document.Id,
@@ -329,7 +332,7 @@ namespace Enviroself.Features.Document
                 Status = (int)InvitationStatus.Pending,
                 FromUserId = currentUser.Id,
                 ToUserId = model.ClientId,
-                Message = "You have a new invitation"
+                Message = message
             };
             MessageDto result = await _documentService.InsertInvitation(invitation);
             if (result.Success)
@@ -360,7 +363,10 @@ namespace Enviroself.Features.Document
                 MessageDto result2 = new MessageDto();
 
                 if (invitation.ActionType == (int)InvitationActionType.Edit)
+                {
+                    result2 = await _documentService.AssignClientToViewDocument(invitation.Document.OwnerId, currentUser.Id, invitation.DocumentId);
                     result2 = await _documentService.AssignClientToEditDocument(invitation.Document.OwnerId, currentUser.Id, invitation.DocumentId);
+                }
                 else if (invitation.ActionType == (int)InvitationActionType.View)
                     result2 = await _documentService.AssignClientToViewDocument(invitation.Document.OwnerId, currentUser.Id, invitation.DocumentId);
 
@@ -419,6 +425,26 @@ namespace Enviroself.Features.Document
             return BadRequest(result);
         }
 
+
+        [HttpGet("getallusers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var currentUser = await _identityService.GetCurrentPersonIdentityAsync();
+
+            if (currentUser == null)
+                return BadRequest(new MessageDto() { Success = false, Message = "Invalid user" });
+
+            var users = await _documentService.GetAllUsers();
+
+            var result = users.Where(c => c.Id != currentUser.Id).Select(c => new ClientRecordDto()
+            {
+                Id = c.Id,
+                Email = c.Email,
+                Username = c.UserName
+            }).ToList();
+
+            return new OkObjectResult(result);
+        }
         #endregion
     }
 }

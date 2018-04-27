@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { AlertService } from '../../../_services';
 import { Router } from '@angular/router';
@@ -14,7 +14,7 @@ export class AddDocumentComponent implements OnInit {
 
     addDocumentForm: FormGroup;
     documentNew: DocumentNewDto = new DocumentNewDto();
-
+    @Output() documentEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
     
     constructor(fb: FormBuilder,
         private router: Router,
@@ -39,6 +39,7 @@ export class AddDocumentComponent implements OnInit {
             data => {
                 if(data.success){
                     this._alertService.success("Document", data.message);
+                    this.documentEmitter.emit(true);
                     this.clearForm();
                     this.router.navigate(['']);
                 }

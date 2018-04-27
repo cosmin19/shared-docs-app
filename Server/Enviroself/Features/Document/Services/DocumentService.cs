@@ -21,6 +21,14 @@ namespace Enviroself.Features.Document.Services
 
         public virtual async Task<MessageDto> AssignClientToEditDocument(int ownerId, int editorId, int documentId)
         {
+            var check = await _context.UserDocumentEdits.Where(c => c.EditorId == editorId && c.OwnerId == ownerId && c.DocumentId == documentId).FirstOrDefaultAsync();
+            if(check != null)
+                return new MessageDto() { Success = true, Message = "This user already exists." };
+
+            var check2 = await _context.UserDocumentEdits.Where(c => c.EditorId != ownerId && c.OwnerId == ownerId && c.DocumentId == documentId).ToListAsync();
+            if (check2.Count > 0)
+                return new MessageDto() { Success = false, Message = "There is an user who already have rights to edit this file." };
+
             await _context.UserDocumentEdits.AddAsync(new UserDocumentEdit()
             {
                 DocumentId = documentId,
@@ -33,7 +41,10 @@ namespace Enviroself.Features.Document.Services
 
         public virtual async Task<MessageDto> AssignClientToViewDocument(int ownerId, int viewerId, int documentId)
         {
-            /* Userul ce a creat documentul este by default si Viewer si Editor */
+            var check = await _context.UserDocumentViews.Where(c => c.ViewerId == viewerId && c.OwnerId == ownerId && c.DocumentId == documentId).FirstOrDefaultAsync();
+            if (check != null)
+                return new MessageDto() { Success = true, Message = "Already exists." };
+
             await _context.UserDocumentViews.AddAsync(new UserDocumentView()
             {
                 DocumentId = documentId,
@@ -67,6 +78,18 @@ namespace Enviroself.Features.Document.Services
             var document = await _context.Documents.Where(c => c.Id == id).FirstOrDefaultAsync();
             if (document != null)
             {
+                var invitations = await _context.Invitations.Where(c => c.DocumentId == id).ToListAsync();
+                foreach(var inv in invitations)
+                    _context.Invitations.Remove(inv);
+
+                var editers = await _context.UserDocumentEdits.Where(c => c.DocumentId == id).ToListAsync();
+                foreach (var xuser in editers)
+                    _context.UserDocumentEdits.Remove(xuser);
+
+                var viewers = await _context.UserDocumentViews.Where(c => c.DocumentId == id).ToListAsync();
+                foreach (var xuser in viewers)
+                    _context.UserDocumentViews.Remove(xuser);
+
                 _context.Documents.Remove(document);
                 await _context.SaveChangesAsync();
                 return new MessageDto() { Success = true, Message = "Document Deleted." };
@@ -130,6 +153,11 @@ namespace Enviroself.Features.Document.Services
             return result;
         }
 
+        public virtual async Task<List<User>> GetAllUsers()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
         public virtual async Task<Entities.Document> GetDocumentById(int id)
         {
             var result = await _context.Documents.Where(c => c.Id == id).Include(c => c.Owner).FirstOrDefaultAsync();
@@ -177,10 +205,22 @@ namespace Enviroself.Features.Document.Services
             if (invitation == null)
                 return new MessageDto() { Success = false, Message = "Error." };
 
+            var check = await _context.UserDocumentEdits.Where(c => c.EditorId == invitation.ToUserId && c.OwnerId == invitation.FromUserId && c.DocumentId == invitation.DocumentId).FirstOrDefaultAsync();
+            if (check != null)
+                return new MessageDto() { Success = true, Message = "This user already exists." };
+
+            var check1 = await _context.UserDocumentViews.Where(c => c.ViewerId == invitation.ToUserId && c.OwnerId == invitation.FromUserId && c.DocumentId == invitation.DocumentId).FirstOrDefaultAsync();
+            if (check1 != null && invitation.ActionType == (int)InvitationActionType.View)
+                return new MessageDto() { Success = true, Message = "Already exists." };
+
+            var check2 = await _context.UserDocumentEdits.Where(c => c.EditorId != invitation.FromUserId && c.OwnerId == invitation.FromUserId && c.DocumentId == invitation.DocumentId).FirstOrDefaultAsync();
+            if (check2 != null)
+                return new MessageDto() { Success = true, Message = "There is an user who already have rights to edit this file." };
+
             await _context.Invitations.AddAsync(invitation);
 
             await _context.SaveChangesAsync();
-            return new MessageDto() { Success = true, Message = "Document Inserted." };
+            return new MessageDto() { Success = true, Message = "Invitation sent." };
         }
 
         public virtual async Task<MessageDto> RemoveClientFromEditDocument(int clientId, int documentId)

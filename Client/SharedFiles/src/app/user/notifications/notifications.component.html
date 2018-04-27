@@ -1,3 +1,21 @@
-<p>
-    notifications works!
-</p>
+<div class="container">
+    <h2>Notification</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Message</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let notif of notifications">
+                <td>{{notif?.invitationId}}</td>
+                <td>{{notif?.message}}</td>
+                <td>
+                    <a (click)="acceptInvitation(notif.invitationId)" style="cursor: pointer;"> Accept </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

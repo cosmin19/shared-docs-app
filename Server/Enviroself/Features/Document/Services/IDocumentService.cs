@@ -29,5 +29,6 @@ namespace Enviroself.Features.Document.Services
         Task<IList<Invitation>> GetPendingInvitations(int clientId);
         Task<List<User>> GetViewersForDocument(int ownerId, int documentId);
         Task<List<User>> GetEditersForDocument(int ownerId, int documentId);
+        Task<List<User>> GetAllUsers();
     }
 }

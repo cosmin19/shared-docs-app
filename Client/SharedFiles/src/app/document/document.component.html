@@ -14,8 +14,8 @@
 
     </div>
 
-    <add-document></add-document>
-    <edit-document [document]="editDocument" *ngIf="renderEditModal"></edit-document>
+    <add-document (documentEmitter)="documentEmitAction($event)"></add-document>
+    <edit-document [document]="editDocument" *ngIf="renderEditModal" (documentEmitter)="documentEmitAction($event)"></edit-document>
     <p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>
     <div class="row" *ngFor="let document of documents">
         <div class="document-mini-info-div">
